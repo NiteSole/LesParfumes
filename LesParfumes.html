@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LesParfumes - Parfüm Danışmanınız</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Auth Pages */
+    .auth-container {
+      max-width: 480px;
+      margin: 80px auto;
+      background: white;
+      padding: 50px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .back-button {
+      background: transparent;
+      border: none;
+      color: #c9a961;
+      cursor: pointer;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 20px;
+      padding: 5px;
+      transition: all 0.3s;
+    }
+    .back-button:hover {
+      transform: translateX(-5px);
+    }
+    .auth-container h1 {
+      color: #c9a961;
+      font-size: 2.8em;
+      margin-bottom: 15px;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 2px;
+    }
+    .auth-container .subtitle {
+      color: #888;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1.1em;
+    }
+    .form-group {
+      margin-bottom: 25px;
+    }
+    .form-group label {
+      display: block;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 0.95em;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1.05em;
+      transition: all 0.3s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #c9a961;
+      box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.1);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+      color: #1a1a2e;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.15em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(201, 169, 97, 0.4);
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 25px;
+      color: #666;
+      font-size: 0.95em;
+    }
+    .switch-link a {
+      color: #c9a961;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .switch-link a:hover {
+      color: #d4af37;
+      text-decoration: underline;
+    }
+
+    /* Main Site */
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px 1fr 380px;
+      gap: 20px;
+      height: calc(100vh - 40px);
+    }
+    .header {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(201, 169, 97, 0.2);
+      position: relative;
+    }
+    .language-switcher {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      display: flex;
+      gap: 10px;
+    }
+    .lang-btn {
+      padding: 8px 16px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 1px solid rgba(201, 169, 97, 0.3);
+      color: #c9a961;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+    .lang-btn:hover {
+      background: rgba(201, 169, 97, 0.2);
+    }
+    .lang-btn.active {
+      background: #c9a961;
+      color: #1a1a2e;
+      border-color: #c9a961;
+    }
+    .header-content {
+      flex: 1;
+      text-align: center;
+    }
+    .header h1 {
+      color: #c9a961;
+      font-size: 3em;
+      margin-bottom: 10px;
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 10px rgba(201, 169, 97, 0.3);
+    }
+    .header p {
+      color: #d0d0d0;
+      font-size: 1.1em;
+      letter-spacing: 1px;
+    }
+    .auth-buttons {
+      display: flex;
+      gap: 15px;
+    }
+    .auth-btn {
+      padding: 12px 28px;
+      border-radius: 25px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.95em;
+    }
+    .login-btn {
+      background: transparent;
+      color: #c9a961;
+      border: 2px solid #c9a961;
+    }
+    .login-btn:hover {
+      background: #c9a961;
+      color: #1a1a2e;
+      transform: translateY(-2px);
+    }
+    .register-btn {
+      background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+      color: #1a1a2e;
+    }
+    .register-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(201, 169, 97, 0.4);
+    }
+    .user-info {
+      display: none;
+      align-items: center;
+      gap: 15px;
+    }
+    .user-info.active {
+      display: flex;
+    }
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a1a2e;
+      font-weight: bold;
+      font-size: 1.3em;
+    }
+    .user-name {
+      color: #c9a961;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+    .btn-logout {
+      padding: 12px 28px;
+      background: transparent;
+      color: #c9a961;
+      border: 2px solid #c9a961;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-logout:hover {
+      background: #c9a961;
+      color: #1a1a2e;
+      transform: translateY(-2px);
+    }
+
+    /* Filters Sidebar */
+    .filters-sidebar {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      border: 1px solid rgba(201, 169, 97, 0.2);
+    }
+    .filters-sidebar h3 {
+      color: #c9a961;
+      font-size: 1.5em;
+      margin-bottom: 25px;
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 1px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.3);
+    }
+    .filter-section {
+      margin-bottom: 30px;
+    }
+    .filter-section-title {
+      color: #d0d0d0;
+      font-size: 0.95em;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .filter-checkbox:hover {
+      background: rgba(201, 169, 97, 0.1);
+    }
+    .filter-checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #c9a961;
+    }
+    .filter-checkbox label {
+      color: #b0b0b0;
+      font-size: 0.9em;
+      cursor: pointer;
+      flex: 1;
+    }
+    .filter-checkbox input:checked + label {
+      color: #c9a961;
+      font-weight: 600;
+    }
+    .clear-filters {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: #c9a961;
+      border: 1px solid #c9a961;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85em;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    .clear-filters:hover {
+      background: #c9a961;
+      color: #1a1a2e;
+    }
+
+    .products-section {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      border: 1px solid rgba(201, 169, 97, 0.2);
+    }
+    .products-section h2 {
+      color: #c9a961;
+      margin-bottom: 20px;
+      font-size: 2em;
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 2px;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 14px 20px;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-radius: 25px;
+      font-size: 1em;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    .search-bar::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .search-bar:focus {
+      outline: none;
+      border-color: #c9a961;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(201, 169, 97, 0.2);
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .product-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(201, 169, 97, 0.2);
+      border-radius: 15px;
+      padding: 20px;
+      transition: all 0.4s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 45px rgba(201, 169, 97, 0.3);
+      border-color: #c9a961;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%);
+    }
+    .product-image {
+      width: 140px;
+      height: 180px;
+      margin-bottom: 15px;
+      object-fit: cover;
+      border-radius: 10px;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    }
+    .product-brand {
+      color: #c9a961;
+      font-weight: bold;
+      font-size: 0.95em;
+      margin-bottom: 5px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .product-name {
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 5px;
+      text-align: center;
+      font-size: 1.05em;
+    }
+    .product-type {
+      color: #b0b0b0;
+      font-size: 0.85em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .product-notes {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .note-tag {
+      background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+      color: #1a1a2e;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 0.75em;
+      font-weight: 600;
+    }
+    .chat-section {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      border: 1px solid rgba(201, 169, 97, 0.2);
+    }
+    .chat-section h2 { 
+      color: #c9a961;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 2px;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+    }
+    .message {
+      margin-bottom: 15px;
+      padding: 12px 18px;
+      border-radius: 18px;
+      max-width: 85%;
+      animation: messageIn 0.3s;
+      white-space: pre-wrap;
+    }
+    @keyframes messageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.bot {
+      background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+      color: #1a1a2e;
+      margin-right: auto;
+    }
+    .message.user {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #c9a961;
+      margin-left: auto;
+      border: 1px solid #c9a961;
+    }
+    .quick-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .quick-btn {
+      padding: 10px 15px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 1px solid rgba(201, 169, 97, 0.3);
+      color: #c9a961;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9em;
+    }
+    .quick-btn:hover {
+      background: #c9a961;
+      color: #1a1a2e;
+      border-color: #c9a961;
+    }
+    .chat-input-container {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-radius: 25px;
+      font-size: 1em;
+    }
+    .chat-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .chat-input:focus {
+      outline: none;
+      border-color: #c9a961;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .btn-send {
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+      color: #1a1a2e;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .btn-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(201, 169, 97, 0.4);
+    }
+    .chat-locked {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+      background: rgba(201, 169, 97, 0.05);
+      border: 2px dashed rgba(201, 169, 97, 0.3);
+      border-radius: 15px;
+      gap: 20px;
+    }
+    .chat-locked h3 {
+      color: #c9a961;
+      font-size: 1.5em;
+      font-family: 'Playfair Display', serif;
+    }
+    .chat-locked p {
+      color: #b0b0b0;
+      font-size: 1.1em;
+    }
+    .chat-unlocked {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+    }
+    .chat-unlocked.active {
+      display: flex;
+    }
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 250px 1fr;
+      }
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .chat-section {
+        grid-column: 1 / -1;
+        height: 600px;
+      }
+    }
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .filters-sidebar {
+        height: auto;
+      }
+      .chat-section {
+        height: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Register Page -->
+  <div class="page" id="registerPage">
+    <div class="auth-container">
+      <button class="back-button" onclick="showPage('mainPage')">← <span data-lang-key="backToMain">Ana Sayfa</span></button>
+      <h1 data-lang-key="createAccount">Hesap Oluştur</h1>
+      <p class="subtitle" data-lang-key="joinFamily">LesParfumes ailesine katılın</p>
+      <div class="form-group">
+        <label data-lang-key="fullName">Ad Soyad</label>
+        <input type="text" id="regName" data-lang-placeholder="fullNamePlaceholder" placeholder="Ahmet Yılmaz" />
+      </div>
+      <div class="form-group">
+        <label data-lang-key="email">E-posta</label>
+        <input type="email" id="regEmail" data-lang-placeholder="emailPlaceholder" placeholder="ahmet@email.com" />
+      </div>
+      <div class="form-group">
+        <label data-lang-key="password">Şifre (min 6 karakter)</label>
+        <input type="password" id="regPass" placeholder="••••••••" />
+      </div>
+      <button class="btn-primary" onclick="register()" data-lang-key="registerBtn">Kayıt Ol</button>
+      <div class="switch-link">
+        <span data-lang-key="alreadyHaveAccount">Zaten hesabınız var mı?</span> <a onclick="showPage('loginPage')" data-lang-key="loginLink">Giriş Yapın</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Page -->
+  <div class="page" id="loginPage">
+    <div class="auth-container">
+      <button class="back-button" onclick="showPage('mainPage')">← <span data-lang-key="backToMain">Ana Sayfa</span></button>
+      <h1 data-lang-key="welcome">Hoş Geldiniz</h1>
+      <p class="subtitle" data-lang-key="loginToAccount">Hesabınıza giriş yapın</p>
+      <div class="form-group">
+        <label data-lang-key="email">E-posta</label>
+        <input type="email" id="logEmail" data-lang-placeholder="emailAddressPlaceholder" placeholder="E-posta adresiniz" />
+      </div>
+      <div class="form-group">
+        <label data-lang-key="password">Şifre</label>
+        <input type="password" id="logPass" placeholder="••••••••" />
+      </div>
+      <button class="btn-primary" onclick="login()" data-lang-key="loginBtn">Giriş Yap</button>
+      <div class="switch-link">
+        <span data-lang-key="noAccount">Hesabınız yok mu?</span> <a onclick="showPage('registerPage')" data-lang-key="registerLink">Kayıt Olun</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Page -->
+  <div class="page active" id="mainPage">
+    <div class="container">
+      <div class="header">
+        <div class="language-switcher">
+          <button class="lang-btn active" onclick="switchLanguage('tr')" id="langTr">TR</button>
+          <button class="lang-btn" onclick="switchLanguage('en')" id="langEn">EN</button>
+        </div>
+        <div class="header-content">
+          <h1>LesParfumes</h1>
+          <p data-lang-key="headerSubtitle">Kişisel parfüm danışmanınız</p>
+        </div>
+        <div class="auth-buttons" id="authButtons">
+          <button class="auth-btn login-btn" onclick="showPage('loginPage')" data-lang-key="loginBtn">Giriş Yap</button>
+          <button class="auth-btn register-btn" onclick="showPage('registerPage')" data-lang-key="registerBtn">Kayıt Ol</button>
+        </div>
+        <div class="user-info" id="userInfo">
+          <div class="user-avatar" id="avatar">U</div>
+          <span class="user-name" id="userName">Kullanıcı</span>
+          <button class="btn-logout" onclick="logout()" data-lang-key="logoutBtn">Çıkış</button>
+        </div>
+      </div>
+      <div class="filters-sidebar">
+        <h3 data-lang-key="filtersTitle">Filtreler</h3>
+        <div class="filter-section">
+          <div class="filter-section-title" data-lang-key="genderTitle">Cinsiyet</div>
+          <div class="filter-options">
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-kadin" value="kadın" onchange="applyFilters()" />
+              <label for="filter-kadin" data-lang-key="womenLabel">Kadın</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-erkek" value="erkek" onchange="applyFilters()" />
+              <label for="filter-erkek" data-lang-key="menLabel">Erkek</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-unisex" value="unisex" onchange="applyFilters()" />
+              <label for="filter-unisex" data-lang-key="unisexLabel">Unisex</label>
+            </div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-title" data-lang-key="priceTitle">Fiyat Aralığı</div>
+          <div class="filter-options">
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-ekonomik" value="ekonomik" onchange="applyFilters()" />
+              <label for="filter-ekonomik" data-lang-key="economicLabel">Ekonomik (0-50€)</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-orta" value="orta" onchange="applyFilters()" />
+              <label for="filter-orta" data-lang-key="mediumLabel">Orta (50-150€)</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-premium" value="premium" onchange="applyFilters()" />
+              <label for="filter-premium" data-lang-key="premiumLabel">Premium (150€+)</label>
+</div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-title" data-lang-key="familyTitle">Koku Ailesi</div>
+          <div class="filter-options">
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-ciceksi" value="Çiçeksi" onchange="applyFilters()" />
+              <label for="filter-ciceksi" data-lang-key="floralLabel">Çiçeksi</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-odunsu" value="Odunsu" onchange="applyFilters()" />
+              <label for="filter-odunsu" data-lang-key="woodyLabel">Odunsu</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-oryantal" value="Oryantal" onchange="applyFilters()" />
+              <label for="filter-oryantal" data-lang-key="orientalLabel">Oryantal</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-taze" value="Taze" onchange="applyFilters()" />
+              <label for="filter-taze" data-lang-key="freshLabel">Taze</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-narenciye" value="Narenciye" onchange="applyFilters()" />
+              <label for="filter-narenciye" data-lang-key="citrusLabel">Narenciye</label>
+            </div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-title" data-lang-key="intensityTitle">Yoğunluk</div>
+          <div class="filter-options">
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-hafif" value="hafif" onchange="applyFilters()" />
+              <label for="filter-hafif" data-lang-key="lightLabel">Hafif</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-orta-yogun" value="orta" onchange="applyFilters()" />
+              <label for="filter-orta-yogun" data-lang-key="mediumIntensityLabel">Orta</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-yogun" value="yoğun" onchange="applyFilters()" />
+              <label for="filter-yogun" data-lang-key="intenseLabel">Yoğun</label>
+            </div>
+          </div>
+        </div>
+        <div class="filter-section">
+          <div class="filter-section-title" data-lang-key="profileTitle">Koku Profili</div>
+          <div class="filter-options">
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-tatli" value="tatlı" onchange="applyFilters()" />
+              <label for="filter-tatli" data-lang-key="sweetLabel">Tatlı</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-eksi" value="ekşi" onchange="applyFilters()" />
+              <label for="filter-eksi" data-lang-key="sourLabel">Ekşi</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-taze-profil" value="taze-profil" onchange="applyFilters()" />
+              <label for="filter-taze-profil" data-lang-key="freshProfileLabel">Taze</label>
+            </div>
+            <div class="filter-checkbox">
+              <input type="checkbox" id="filter-baharatli" value="baharatlı" onchange="applyFilters()" />
+              <label for="filter-baharatli" data-lang-key="spicyLabel">Baharatlı</label>
+            </div>
+          </div>
+        </div>
+        <button class="clear-filters" onclick="clearAllFilters()" data-lang-key="clearFilters">Tüm Filtreleri Temizle</button>
+      </div>
+
+      <div class="products-section">
+        <h2 data-lang-key="collectionTitle">Koleksiyonumuz</h2>
+        <input type="text" class="search-bar" id="searchBar" data-lang-placeholder="searchPlaceholder" placeholder="Parfüm, marka veya nota arayın..." />
+        <div class="product-grid" id="productGrid"></div>
+      </div>
+
+      <div class="chat-section">
+        <h2 data-lang-key="assistantTitle">Parfüm Asistanı</h2>
+        <div id="chatLocked" class="chat-locked">
+          <h3 data-lang-key="chatLockedTitle">Chatbot'u Kullanmak İçin Giriş Yapın</h3>
+          <p data-lang-key="chatLockedDesc">Parfüm önerileri ve kişiselleştirilmiş yardım almak için hesap oluşturun veya giriş yapın.</p>
+          <div style="display: flex; gap: 15px;">
+            <button class="auth-btn register-btn" onclick="showPage('registerPage')" data-lang-key="registerBtn">Kayıt Ol</button>
+            <button class="auth-btn login-btn" onclick="showPage('loginPage')" data-lang-key="loginBtn">Giriş Yap</button>
+          </div>
+        </div>
+        <div id="chatUnlocked" class="chat-unlocked">
+          <div class="chat-messages" id="chatMessages">
+            <div class="message bot" data-lang-key="welcomeMessage">Merhaba! Ben sizin kişisel parfüm danışmanınızım. Size nasıl yardımcı olabilirim?</div>
+          </div>
+          <div class="quick-questions">
+            <button class="quick-btn" onclick="askBot(translations[currentLang].quickFresh)" data-lang-key="quickFresh">Taze ve hafif</button>
+            <button class="quick-btn" onclick="askBot(translations[currentLang].quickIntense)" data-lang-key="quickIntense">Yoğun akşam kokusu</button>
+            <button class="quick-btn" onclick="askBot(translations[currentLang].quickBestsellers)" data-lang-key="quickBestsellers">Çok satanlar</button>
+          </div>
+          <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" data-lang-placeholder="chatPlaceholder" placeholder="Sorunuzu yazın..." />
+            <button class="btn-send" onclick="sendChat()" data-lang-key="sendBtn">Gönder</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Language translations
+    const translations = {
+      tr: {
+        backToMain: 'Ana Sayfa',
+        createAccount: 'Hesap Oluştur',
+        joinFamily: 'LesParfumes ailesine katılın',
+        fullName: 'Ad Soyad',
+        fullNamePlaceholder: 'Ahmet Yılmaz',
+        email: 'E-posta',
+        emailPlaceholder: 'ahmet@email.com',
+        emailAddressPlaceholder: 'E-posta adresiniz',
+        password: 'Şifre (min 6 karakter)',
+        registerBtn: 'Kayıt Ol',
+        alreadyHaveAccount: 'Zaten hesabınız var mı?',
+        loginLink: 'Giriş Yapın',
+        welcome: 'Hoş Geldiniz',
+        loginToAccount: 'Hesabınıza giriş yapın',
+        loginBtn: 'Giriş Yap',
+        noAccount: 'Hesabınız yok mu?',
+        registerLink: 'Kayıt Olun',
+        headerSubtitle: 'Kişisel parfüm danışmanınız',
+        logoutBtn: 'Çıkış',
+        filtersTitle: 'Filtreler',
+        genderTitle: 'Cinsiyet',
+        womenLabel: 'Kadın',
+        menLabel: 'Erkek',
+        unisexLabel: 'Unisex',
+        priceTitle: 'Fiyat Aralığı',
+        economicLabel: 'Ekonomik (0-50€)',
+        mediumLabel: 'Orta (50-150€)',
+        premiumLabel: 'Premium (150€+)',
+        familyTitle: 'Koku Ailesi',
+        floralLabel: 'Çiçeksi',
+        woodyLabel: 'Odunsu',
+        orientalLabel: 'Oryantal',
+        freshLabel: 'Taze',
+        citrusLabel: 'Narenciye',
+        intensityTitle: 'Yoğunluk',
+        lightLabel: 'Hafif',
+        mediumIntensityLabel: 'Orta',
+        intenseLabel: 'Yoğun',
+        profileTitle: 'Koku Profili',
+        sweetLabel: 'Tatlı',
+        sourLabel: 'Ekşi',
+        freshProfileLabel: 'Taze',
+        spicyLabel: 'Baharatlı',
+        clearFilters: 'Tüm Filtreleri Temizle',
+        collectionTitle: 'Koleksiyonumuz',
+        searchPlaceholder: 'Parfüm, marka veya nota arayın...',
+        assistantTitle: 'Parfüm Asistanı',
+        chatLockedTitle: 'Chatbot\'u Kullanmak İçin Giriş Yapın',
+        chatLockedDesc: 'Parfüm önerileri ve kişiselleştirilmiş yardım almak için hesap oluşturun veya giriş yapın.',
+        welcomeMessage: 'Merhaba! Ben sizin kişisel parfüm danışmanınızım. Size nasıl yardımcı olabilirim?',
+        quickFresh: 'Taze ve hafif parfüm öner',
+        quickIntense: 'Akşam için yoğun parfüm',
+        quickBestsellers: 'En çok satanlar',
+        chatPlaceholder: 'Sorunuzu yazın...',
+        sendBtn: 'Gönder'
+      },
+      en: {
+        backToMain: 'Home',
+        createAccount: 'Create Account',
+        joinFamily: 'Join the LesParfumes family',
+        fullName: 'Full Name',
+        fullNamePlaceholder: 'John Doe',
+        email: 'Email',
+        emailPlaceholder: 'john@email.com',
+        emailAddressPlaceholder: 'Your email address',
+        password: 'Password (min 6 characters)',
+        registerBtn: 'Register',
+        alreadyHaveAccount: 'Already have an account?',
+        loginLink: 'Login',
+        welcome: 'Welcome',
+        loginToAccount: 'Login to your account',
+        loginBtn: 'Login',
+        noAccount: 'Don\'t have an account?',
+        registerLink: 'Register',
+        headerSubtitle: 'Your personal perfume consultant',
+        logoutBtn: 'Logout',
+        filtersTitle: 'Filters',
+        genderTitle: 'Gender',
+        womenLabel: 'Women',
+        menLabel: 'Men',
+        unisexLabel: 'Unisex',
+        priceTitle: 'Price Range',
+        economicLabel: 'Economic (0-50€)',
+        mediumLabel: 'Medium (50-150€)',
+        premiumLabel: 'Premium (150€+)',
+        familyTitle: 'Fragrance Family',
+        floralLabel: 'Floral',
+        woodyLabel: 'Woody',
+        orientalLabel: 'Oriental',
+        freshLabel: 'Fresh',
+        citrusLabel: 'Citrus',
+        intensityTitle: 'Intensity',
+        lightLabel: 'Light',
+        mediumIntensityLabel: 'Medium',
+        intenseLabel: 'Intense',
+        profileTitle: 'Scent Profile',
+        sweetLabel: 'Sweet',
+        sourLabel: 'Sour',
+        freshProfileLabel: 'Fresh',
+        spicyLabel: 'Spicy',
+        clearFilters: 'Clear All Filters',
+        collectionTitle: 'Our Collection',
+        searchPlaceholder: 'Search perfume, brand or note...',
+        assistantTitle: 'Perfume Assistant',
+        chatLockedTitle: 'Login to Use Chatbot',
+        chatLockedDesc: 'Create an account or login to get perfume recommendations and personalized help.',
+        welcomeMessage: 'Hello! I\'m your personal perfume consultant. How can I help you?',
+        quickFresh: 'Suggest fresh and light perfume',
+        quickIntense: 'Intense evening perfume',
+        quickBestsellers: 'Bestsellers',
+        chatPlaceholder: 'Type your question...',
+        sendBtn: 'Send'
+      }
+    };
+
+    let currentLang = 'tr';
+
+    function switchLanguage(lang) {
+      currentLang = lang;
+      
+      // Update active button
+      document.getElementById('langTr').classList.toggle('active', lang === 'tr');
+      document.getElementById('langEn').classList.toggle('active', lang === 'en');
+      
+      // Update all elements with data-lang-key
+      document.querySelectorAll('[data-lang-key]').forEach(el => {
+        const key = el.getAttribute('data-lang-key');
+        if (translations[lang][key]) {
+          if (el.tagName === 'INPUT' && el.type !== 'checkbox') {
+            // Skip input values, only update if it's a placeholder
+          } else {
+            el.textContent = translations[lang][key];
+          }
+        }
+      });
+      
+      // Update placeholders
+      document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-lang-placeholder');
+        if (translations[lang][key]) {
+          el.placeholder = translations[lang][key];
+        }
+      });
+      
+      // Update search bar placeholder
+      const searchBar = document.getElementById('searchBar');
+      if (searchBar) {
+        searchBar.placeholder = translations[lang].searchPlaceholder;
+      }
+      
+      // Update chat input placeholder
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) {
+        chatInput.placeholder = translations[lang].chatPlaceholder;
+      }
+      
+      // Re-render products to update notes
+      renderProducts();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const sb = document.getElementById('searchBar');
+      if (sb) {
+        sb.addEventListener('input', renderProducts);
+      }
+      const ci = document.getElementById('chatInput');
+      if (ci) {
+        ci.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') sendChat();
+        });
+      }
+      renderProducts();
+    });
+
+    const USERS = {};
+    let currentUser = null;
+    let currentFilters = {
+      gender: [],
+      price: [],
+      family: [],
+      intensity: [],
+      profile: []
+    };
+
+    const perfumes = [
+      // Tom Ford
+      { brand: "Tom Ford", name: "Oud Wood", type: "Eau de Parfum", gender: "unisex", notes: { tr: ["Odunsu", "Oryantal", "Oud"], en: ["Woody", "Oriental", "Oud"] }, desc: "Egzotik oud ağacı ile baharatlı ve odunsu notalar", image: "https://fimgs.net/mdimg/perfume/375x500.652.jpg", price: "premium", intensity: "yoğun", profile: "baharatlı" },
+      
+      
+      // Carolina Herrera
+      { brand: "Carolina Herrera", name: "212 Men", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Taze", "Odunsu", "Narenciye"], en: ["Fresh", "Woody", "Citrus"] }, desc: "Modern ve enerjik, bergamot ve sandal ağacı notaları", image: "https://fimgs.net/mdimg/perfume/375x500.180.jpg", price: "orta", intensity: "orta", profile: "taze-profil" },
+      { brand: "Carolina Herrera", name: "Good Girl", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Oryantal", "Badem"], en: ["Floral", "Oriental", "Almond"] }, desc: "İkonik topuklu şişe, tatlı ve büyüleyici", image: "https://fimgs.net/mdimg/perfume/375x500.41978.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Tom Ford", name: "Tobacco Vanille", type: "Eau de Parfum", gender: "unisex", notes: { tr: ["Oryantal", "Vanilya", "Tütün"], en: ["Oriental", "Vanilla", "Tobacco"] }, desc: "Zengin tütün ve vanilya karışımı, sıcak ve lüks", image: "https://fimgs.net/mdimg/perfume/375x500.1825.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      
+      // Cartier
+      { brand: "Cartier", name: "Eau de Cartier", type: "Eau de Toilette", gender: "unisex", notes: { tr: ["Taze", "Narenciye", "Su"], en: ["Fresh", "Citrus", "Aquatic"] }, desc: "Ferah ve temiz, lavanta ve nane notaları", image: "https://fimgs.net/mdimg/perfume/375x500.12919.jpg", price: "orta", intensity: "hafif", profile: "taze-profil" },
+      
+      // Louis Vuitton
+      { brand: "Louis Vuitton", name: "Spell on You", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Oryantal", "İris"], en: ["Floral", "Oriental", "Iris"] }, desc: "Büyüleyici çiçeksi kompozisyon, iris ve tonka fasulyesi", image: "https://eu.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-spell-on-you-parfums-louis-vuitton--LP0115_PM2_Front%20view.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Louis Vuitton", name: "Rose des Vents", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Gül", "Pudralı"], en: ["Floral", "Rose", "Powdery"] }, desc: "Zarif gül kokusu, safran ve pralin notaları", image: "https://eu.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-rose-des-vents-parfums-louis-vuitton--LP0106_PM2_Front%20view.jpg", price: "premium", intensity: "orta", profile: "tatlı" },
+      
+      // Hermès
+      { brand: "Hermès", name: "Terre d'Hermès", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Odunsu", "Narenciye", "Baharatlı"], en: ["Woody", "Citrus", "Spicy"] }, desc: "Klasik erkek parfümü, portakal ve sedir ağacı", image: "https://fimgs.net/mdimg/perfume/375x500.1391.jpg", price: "premium", intensity: "orta", profile: "ekşi" },
+      { brand: "Hermès", name: "H24", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Taze", "Odunsu", "Narenciye"], en: ["Fresh", "Woody", "Citrus"] }, desc: "Modern ve ferah, adaçayı ve metalik notalar", image: "https://fimgs.net/mdimg/perfume/375x500.68743.jpg", price: "premium", intensity: "orta", profile: "taze-profil" },
+      { brand: "Hermès", name: "Voyage d'Hermès", type: "Eau de Toilette", gender: "unisex", notes: { tr: ["Odunsu", "Misk", "Narenciye"], en: ["Woody", "Musk", "Citrus"] }, desc: "Yolculuk kokması, kardamon ve sedir ağacı", image: "https://fimgs.net/mdimg/perfume/375x500.16819.jpg", price: "premium", intensity: "orta", profile: "taze-profil" },
+      { brand: "Hermès", name: "Eau des Merveilles", type: "Eau de Toilette", gender: "kadın", notes: { tr: ["Oryantal", "Odunsu", "Amber"], en: ["Oriental", "Woody", "Amber"] }, desc: "Büyülü ve sıcak, portakal ve amber notaları", image: "https://fimgs.net/mdimg/perfume/375x500.120.jpg", price: "premium", intensity: "orta", profile: "tatlı" },
+      { brand: "Hermès", name: "L'Ambre des Merveilles", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Oryantal", "Amber", "Vanilya"], en: ["Oriental", "Amber", "Vanilla"] }, desc: "Yoğun amber kokusu, labdanum ve paçuli", image: "https://fimgs.net/mdimg/perfume/375x500.13089.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Hermès", name: "Cuir d'Ange", type: "Eau de Parfum", gender: "unisex", notes: { tr: ["Odunsu", "Deri", "Misk"], en: ["Woody", "Leather", "Musk"] }, desc: "Yumuşak deri kokusu, safran ve hawthorn", image: "https://media.hermes.com/p/zm/detail/HER_P_173250_1_V1_-25.png", price: "premium", intensity: "yoğun", profile: "baharatlı" },
+      
+      // Önceki parfümler
+      { brand: "Prada", name: "Paradigme", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Amber"], en: ["Floral", "Amber"] }, desc: "Sofistike çiçeksi-amber koku. Neroli ve yasemin notalarıyla açılır, kalıcılığı yüksektir.", image: "https://www.kalista-parfums.com/224350-thickbox_default/paradigme.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Prada", name: "Paradoxe", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Misk"], en: ["Floral", "Musk"] }, desc: "Modern ve zarif. Neroli tazeliği ile misk sıcaklığını birleştirir.", image: "https://cdn.notinoimg.com/detail_main_lq/prada/3614273760652_01-o/paradoxe___220825.jpg", price: "premium", intensity: "orta", profile: "taze-profil" },
+      { brand: "Chloé", name: "Chloé", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Gül", "Pudralı"], en: ["Floral", "Rose", "Powdery"] }, desc: "İkonik pudralı gül kokusu. Feminen ve romantik.", image: "https://cdn.basler-beauty.de/out/pictures/generated/product/1/980_980_100/40285fef9026cdd80190d9268edb1c0c-Chloe-Chloe-L-Eau-de-Parfum-Intense.0c75ac62.jpg", price: "orta", intensity: "orta", profile: "tatlı" },
+      { brand: "Hugo Boss", name: "Boss Bottled", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Odunsu", "Baharatlı"], en: ["Woody", "Spicy"] }, desc: "Klasik erkek parfümü. İş hayatı için ideal.", image: "https://magento.prod.benlux.sntive.net/media/catalog/product/cache/56ee180f877eaad363b4379b82d82677/b/o/boss-bottled-absolu-parfum-intense-hugo-boss-100-ml_2.jpg", price: "orta", intensity: "orta", profile: "baharatlı" },
+      { brand: "Jean Paul Gaultier", name: "Le Male", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Oryantal", "Vanilya", "Lavanta"], en: ["Oriental", "Vanilla", "Lavender"] }, desc: "İkonik erkek parfümü. Lavanta ve vanilya.", image: "https://www.kalista-parfums.com/163606-thickbox_default/le-male-elixir.jpg", price: "orta", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Lancôme", name: "La Vie est Belle", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Gurme", "İris", "Paçuli"], en: ["Gourmand", "Iris", "Patchouli"] }, desc: "Gurme ve çiçeksi. Tatlı ama sofistike.", image: "https://www.kalista-parfums.com/201549-thickbox_default/la-vie-est-belle-rose-extraordinaire.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Calvin Klein", name: "CK One", type: "Eau de Toilette", gender: "unisex", notes: { tr: ["Taze", "Narenciye"], en: ["Fresh", "Citrus"] }, desc: "Efsanevi unisex parfüm. Ferah ve temiz.", image: "https://olfactoryambition.com/wp-content/uploads/2023/03/clavin-klein-ck-one-review.webp", price: "ekonomik", intensity: "hafif", profile: "taze-profil" },
+      { brand: "Yves Saint Laurent", name: "Libre", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Çiçeksi", "Lavanta", "Portakal"], en: ["Floral", "Lavender", "Orange"] }, desc: "Cesur ve özgür. Modern kadın parfümü.", image: "https://i1.perfumesclub.com/grande/174712-2.jpg", price: "premium", intensity: "yoğun", profile: "baharatlı" },
+      { brand: "Giorgio Armani", name: "Stronger With You Intensely", type: "Eau de Parfum Intense", gender: "erkek", notes: { tr: ["Oryantal", "Baharatlı"], en: ["Oriental", "Spicy"] }, desc: "Yoğun ve sıcak. Kış için mükemmel.", image: "https://www.eclair-parfumeries.com/37354-large_default/giorgio-armani-emporio-armani-stronger-with-you-eau-de-parfum.jpg", price: "premium", intensity: "yoğun", profile: "baharatlı" },
+      { brand: "Kenzo", name: "L'Eau Pure", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Su", "Çiçeksi"], en: ["Aquatic", "Floral"] }, desc: "Su gibi hafif ve temiz. Yazın favorisi.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFlziV7XR2wpsXUqhASmt9ROLUjxoyHceRnQ&s", price: "orta", intensity: "hafif", profile: "taze-profil" },
+      { brand: "Dior", name: "Sauvage", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Bergamot", "Ambroxan", "Biber"], en: ["Bergamot", "Ambroxan", "Pepper"] }, desc: "Taze, baharatlı ve erkeksi modern bir klasik", image: "https://fimgs.net/mdimg/perfume/375x500.31861.jpg", price: "premium", intensity: "orta", profile: "baharatlı" },
+      { brand: "Dior", name: "J'adore", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Ylang-Ylang", "Gül", "Jasmin"], en: ["Ylang-Ylang", "Rose", "Jasmine"] }, desc: "Feminen, zarif ve çiçeksi başyapıt", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRK2kAfX-g3wwmgODv1NBTQhvopM-goFj4pxw&s", price: "premium", intensity: "orta", profile: "tatlı" },
+      { brand: "Guerlain", name: "Shalimar", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Bergamot", "Vanilya", "Tütsü"], en: ["Bergamot", "Vanilla", "Incense"] }, desc: "Klasik oryantal kadın kokusu", image: "https://media.sephora.eu/content/dam/digital/pim/published/G/GUERLAIN/P2296/26673-media_1.jpg?scaleWidth=265&scaleHeight=265&scaleMode=fit", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Armani", name: "Acqua di Gio", type: "Eau de Toilette", gender: "erkek", notes: { tr: ["Deniz Notası", "Bergamot", "Yasemin"], en: ["Marine Note", "Bergamot", "Jasmine"] }, desc: "Ferahlık ve deniz esintisiyle ünlü erkek parfümü", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTriTWaN8lamDxF6CMFXYBU382YXmf4xmLNTQ&s", price: "orta", intensity: "hafif", profile: "taze-profil" },
+      { brand: "Armani", name: "Si", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Siyah Frenk Üzümü", "Vanilya", "Gül"], en: ["Blackcurrant", "Vanilla", "Rose"] }, desc: "Modern, sofistike ve kadınsı", image: "https://images.squarespace-cdn.com/content/v1/5d14e8bfa505890001205e37/c0579b89-f069-4f75-b80f-aa69a6b7af1a/avis-armani-si-eau-de-parfum-femme-revue-pauuulette+%282%29.jpg", price: "premium", intensity: "orta", profile: "tatlı" },
+      { brand: "Tom Ford", name: "Black Orchid", type: "Eau de Parfum", gender: "unisex", notes: { tr: ["Siyah Trüf", "Ylang-Ylang", "Paçuli"], en: ["Black Truffle", "Ylang-Ylang", "Patchouli"] }, desc: "Yoğun, gizemli ve lüks", image: "https://fimgs.net/mdimg/perfume/375x500.1018.jpg", price: "premium", intensity: "yoğun", profile: "baharatlı" },
+      { brand: "Chanel", name: "No.5", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Aldehit", "Gül", "Yasemin"], en: ["Aldehyde", "Rose", "Jasmine"] }, desc: "Tüm zamanların ikonik kadın parfümü", image: "https://olfactoryambition.com/wp-content/uploads/2024/01/chanel-no-5-65aebbd6a9b38.webp", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Chanel", name: "Bleu de Chanel", type: "Eau de Parfum", gender: "erkek", notes: { tr: ["Narenciye", "Sedir", "Sandal Ağacı"], en: ["Citrus", "Cedar", "Sandalwood"] }, desc: "Modern, maskülen ve zarif erkek kokusu", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_78gJfeplY868Mf33tvac5-2lFwPQ7G3sSg&s", price: "premium", intensity: "orta", profile: "ekşi" },
+      { brand: "Yves Saint Laurent", name: "Black Opium", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Kahve", "Vanilya", "Beyaz Çiçekler"], en: ["Coffee", "Vanilla", "White Flowers"] }, desc: "Enerjik, bağımlılık yaratan kadın kokusu", image: "https://kapao.fr/46428-thickbox_default/black-opium-over-red-eau-de-parfum.jpg", price: "premium", intensity: "yoğun", profile: "tatlı" },
+      { brand: "Mugler", name: "Alien", type: "Eau de Parfum", gender: "kadın", notes: { tr: ["Yasemin", "Amber", "Keşmir Odunu"], en: ["Jasmine", "Amber", "Cashmeran Wood"] }, desc: "Mistik, ikonik ve kalıcı", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiGkrAAvmO24QlNqPxW6JPQ9znHHBhlcHBcg&s", price: "premium", intensity: "yoğun", profile: "tatlı" }
+    ];
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const el = document.getElementById(pageId);
+      if (el) el.classList.add('active');
+    }
+
+    function register() {
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('regPass').value;
+
+      if (!name || !email || !email.includes('@')) {
+        alert(currentLang === 'tr' ? 'Lütfen tüm alanları doğru doldurun!' : 'Please fill all fields correctly!');
+        return;
+      }
+      if (pass.length < 6) {
+        alert(currentLang === 'tr' ? 'Şifre en az 6 karakter olmalı!' : 'Password must be at least 6 characters!');
+        return;
+      }
+      if (USERS[email]) {
+        alert(currentLang === 'tr' ? 'Bu e-posta zaten kayıtlı! Giriş yapın.' : 'This email is already registered! Please login.');
+        return;
+      }
+
+      USERS[email] = { name, email, pass };
+      alert(currentLang === 'tr' ? `Kayıt başarılı! Hoş geldiniz ${name}!` : `Registration successful! Welcome ${name}!`);
+
+      document.getElementById('regName').value = '';
+      document.getElementById('regEmail').value = '';
+      document.getElementById('regPass').value = '';
+
+      document.getElementById('logEmail').value = email;
+      document.getElementById('logPass').value = pass;
+      showPage('loginPage');
+    }
+
+    function login() {
+      const email = document.getElementById('logEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('logPass').value;
+
+      if (!email || !pass) {
+        alert(currentLang === 'tr' ? 'E-posta ve şifre gerekli!' : 'Email and password required!');
+        return;
+      }
+
+      const user = USERS[email];
+      if (!user) {
+        alert(currentLang === 'tr' ? 'Bu e-posta kayıtlı değil! Önce kayıt olun.' : 'This email is not registered! Please register first.');
+        return;
+      }
+      if (user.pass !== pass) {
+        alert(currentLang === 'tr' ? 'Şifre yanlış!' : 'Wrong password!');
+        return;
+      }
+
+      currentUser = user;
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('avatar').textContent = user.name.charAt(0).toUpperCase();
+
+      document.getElementById('authButtons').style.display = 'none';
+      document.getElementById('userInfo').classList.add('active');
+      document.getElementById('chatLocked').style.display = 'none';
+      document.getElementById('chatUnlocked').classList.add('active');
+
+      showPage('mainPage');
+      addBotMessage(currentLang === 'tr' ? `Hoş geldiniz ${user.name}! Size nasıl yardımcı olabilirim?` : `Welcome ${user.name}! How can I help you?`);
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('authButtons').style.display = 'flex';
+      document.getElementById('userInfo').classList.remove('active');
+      document.getElementById('chatLocked').style.display = 'flex';
+      document.getElementById('chatUnlocked').classList.remove('active');
+    }
+
+    function applyFilters() {
+      currentFilters.gender = Array.from(document.querySelectorAll('#filter-kadin, #filter-erkek, #filter-unisex'))
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      currentFilters.price = Array.from(document.querySelectorAll('#filter-ekonomik, #filter-orta, #filter-premium'))
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      currentFilters.family = Array.from(document.querySelectorAll('#filter-ciceksi, #filter-odunsu, #filter-oryantal, #filter-taze, #filter-narenciye'))
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      currentFilters.intensity = Array.from(document.querySelectorAll('#filter-hafif, #filter-orta-yogun, #filter-yogun'))
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      currentFilters.profile = Array.from(document.querySelectorAll('#filter-tatli, #filter-eksi, #filter-taze-profil, #filter-baharatli'))
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      renderProducts();
+    }
+
+    function clearAllFilters() {
+      document.querySelectorAll('.filter-checkbox input[type="checkbox"]').forEach(cb => cb.checked = false);
+      currentFilters = {
+        gender: [],
+        price: [],
+        family: [],
+        intensity: [],
+        profile: []
+      };
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      if (!grid) return;
+
+      const search = (document.getElementById('searchBar')?.value || '').toLowerCase();
+
+      const filtered = perfumes.filter(p => {
+        const matchGender = currentFilters.gender.length === 0 || currentFilters.gender.includes(p.gender);
+        const matchPrice = currentFilters.price.length === 0 || currentFilters.price.includes(p.price);
+        const matchFamily = currentFilters.family.length === 0 || p.notes[currentLang].some(n => currentFilters.family.includes(n));
+        const matchIntensity = currentFilters.intensity.length === 0 || currentFilters.intensity.includes(p.intensity);
+        const matchProfile = currentFilters.profile.length === 0 || currentFilters.profile.includes(p.profile);
+
+        const matchSearch = !search ||
+          p.brand.toLowerCase().includes(search) ||
+          p.name.toLowerCase().includes(search) ||
+          p.notes[currentLang].some(n => n.toLowerCase().includes(search));
+
+        return matchGender && matchPrice && matchFamily && matchIntensity && matchProfile && matchSearch;
+      });
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card" data-brand="${p.brand}" data-name="${p.name}">
+          <img class="product-image" src="${p.image}" alt="${p.name}" loading="lazy" />
+          <div class="product-brand">${p.brand}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-type">${p.type}</div>
+          <div class="product-notes">
+            ${p.notes[currentLang].map(n => `<span class="note-tag">${n}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      grid.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const brand = card.getAttribute('data-brand');
+          const name = card.getAttribute('data-name');
+          askAboutProduct(brand, name);
+        });
+      });
+    }
+
+    function addBotMessage(text) {
+      const div = document.createElement('div');
+      div.className = 'message bot';
+      div.innerHTML = text;
+      document.getElementById('chatMessages').appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function addUserMessage(text) {
+      const div = document.createElement('div');
+      div.className = 'message user';
+      div.textContent = text;
+      document.getElementById('chatMessages').appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function sendChat() {
+      if (!currentUser) {
+        alert(currentLang === 'tr' ? 'Chatbot kullanmak için giriş yapmalısınız!' : 'You must login to use the chatbot!');
+        return;
+      }
+      const input = document.getElementById('chatInput');
+      const text = input?.value.trim();
+      if (!text) return;
+      askBot(text);
+      input.value = '';
+    }
+
+    function askBot(question) {
+      if (!currentUser) {
+        alert(currentLang === 'tr' ? 'Chatbot kullanmak için giriş yapmalısınız!' : 'You must login to use the chatbot!');
+        return;
+      }
+      addUserMessage(question);
+      setTimeout(() => {
+        const response = generateResponse(question.toLowerCase());
+        addBotMessage(response);
+      }, 500);
+    }
+
+    function askAboutProduct(brand, name) {
+      if (!currentUser) {
+        alert(currentLang === 'tr' ? 'Chatbot kullanmak için giriş yapmalısınız!' : 'You must login to use the chatbot!');
+        return;
+      }
+      askBot(`${brand} ${name} ${currentLang === 'tr' ? 'hakkında bilgi ver' : 'tell me about'}`);
+    }
+
+    function generateResponse(question) {
+      if (currentLang === 'en') {
+        return generateResponseEN(question);
+      }
+      
+      if (question.includes('merhaba') || question.includes('selam')) {
+        return `Merhaba ${currentUser.name}! Size nasıl yardımcı olabilirim?`;
+      }
+      if (question.includes('teşekkür') || question.includes('sağol')) {
+        return `Rica ederim ${currentUser.name}! Başka soru sorabilirsiniz.`;
+      }
+      const foundPerfume = perfumes.find(p =>
+        question.includes(p.brand.toLowerCase()) ||
+        question.includes(p.name.toLowerCase())
+      );
+      if (foundPerfume) {
+        const similar = perfumes.filter(p =>
+          p !== foundPerfume &&
+          p.gender === foundPerfume.gender &&
+          p.notes.tr.some(n => foundPerfume.notes.tr.includes(n))
+        ).slice(0, 2);
+
+        let response = `<strong>${foundPerfume.brand} ${foundPerfume.name}</strong><br>
+${foundPerfume.desc}<br><strong>Tip:</strong> ${foundPerfume.type}<br>
+<strong>Notalar:</strong> ${foundPerfume.notes.tr.join(', ')}<br>
+<strong>Kime uygun:</strong> ${foundPerfume.gender === 'unisex' ? 'Unisex' : (foundPerfume.gender === 'erkek' ? 'Erkekler' : 'Kadınlar')}`;
+
+        if (similar.length > 0) {
+          response += `<br><br><strong>Benzer:</strong> ${similar.map(p => `${p.brand} ${p.name}`).join(', ')}`;
+        }
+        return response;
+      }
+      if (question.includes('taze') || question.includes('hafif') || question.includes('yaz')) {
+        const fresh = perfumes.filter(p =>
+          p.notes.tr.some(n => ['Taze', 'Narenciye', 'Su'].includes(n))
+        );
+        return `<strong>Taze parfümler:</strong><br>` +
+          fresh.map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('yoğun') || question.includes('akşam') || question.includes('kış')) {
+        const intense = perfumes.filter(p =>
+          p.type.includes('Intense') || p.type.includes('Parfum') ||
+          p.notes.tr.some(n => ['Oryantal', 'Amber', 'Vanilya'].includes(n))
+        );
+        return `<strong>Yoğun parfümler:</strong><br>` +
+          intense.map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('sata') || question.includes('popüler')) {
+        return `<strong>En çok satanlar:</strong><br>` +
+          `• <strong>Lancôme La Vie est Belle</strong><br>` +
+          `• <strong>Jean Paul Gaultier Le Male</strong><br>` +
+          `• <strong>Prada Paradoxe</strong><br>` +
+          `• <strong>YSL Libre</strong>`;
+      }
+      if (question.includes('kadın')) {
+        const women = perfumes.filter(p => p.gender === 'kadın');
+        return `<strong>Kadın parfümleri:</strong><br>` +
+          women.slice(0, 4).map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('erkek')) {
+        const men = perfumes.filter(p => p.gender === 'erkek');
+        return `<strong>Erkek parfümleri:</strong><br>` +
+          men.slice(0, 4).map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('hediye')) {
+        return `<strong>Hediye önerileri:</strong><br>` +
+          `<strong>Kadın:</strong> Lancôme La Vie est Belle, YSL Libre<br>` +
+          `<strong>Erkek:</strong> Jean Paul Gaultier Le Male, Hugo Boss Boss Bottled`;
+      }
+      if (question.includes('randevu') || question.includes('romantik')) {
+        return `<strong>Romantik anlar için:</strong><br>` +
+          `• <strong>Lancôme La Vie est Belle</strong> – Tatlı ve çekici<br>` +
+          `• <strong>YSL Libre</strong> – Ateşli ve unutulmaz<br>` +
+          `• <strong>Jean Paul Gaultier Le Male</strong> – Baştan çıkarıcı`;
+      }
+      if (question.includes('iş') || question.includes('ofis')) {
+        return `<strong>İş için uygun:</strong><br>` +
+          `• <strong>Hugo Boss Boss Bottled</strong> – Profesyonel<br>` +
+          `• <strong>Chloé Chloé</strong> – Zarif<br>` +
+          `• <strong>Calvin Klein CK One</strong> – Hafif`;
+      }
+      return `Size yardımcı olmak için buradayım ${currentUser.name}!<br>` +
+        `Şunları sorabilirsiniz:<br>` +
+        `• Belirli parfüm: "Prada Paradoxe"<br>` +
+        `• Tercih: "taze parfüm öner"<br>` +
+        `• Durum: "akşam için", "iş için", "randevu için"<br>` +
+        `• Kategori: "en çok satanlar", "kadın parfümleri"<br>` +
+        `Ne arıyorsunuz?`;
+    }
+
+    function generateResponseEN(question) {
+      if (question.includes('hello') || question.includes('hi')) {
+        return `Hello ${currentUser.name}! How can I help you?`;
+      }
+      if (question.includes('thank')) {
+        return `You're welcome ${currentUser.name}! Feel free to ask more questions.`;
+      }
+      const foundPerfume = perfumes.find(p =>
+        question.includes(p.brand.toLowerCase()) ||
+        question.includes(p.name.toLowerCase())
+      );
+      if (foundPerfume) {
+        const similar = perfumes.filter(p =>
+          p !== foundPerfume &&
+          p.gender === foundPerfume.gender &&
+          p.notes.en.some(n => foundPerfume.notes.en.includes(n))
+        ).slice(0, 2);
+
+        let response = `<strong>${foundPerfume.brand} ${foundPerfume.name}</strong><br>
+${foundPerfume.desc}<br><strong>Type:</strong> ${foundPerfume.type}<br>
+<strong>Notes:</strong> ${foundPerfume.notes.en.join(', ')}<br>
+<strong>For:</strong> ${foundPerfume.gender === 'unisex' ? 'Unisex' : (foundPerfume.gender === 'erkek' ? 'Men' : 'Women')}`;
+
+        if (similar.length > 0) {
+          response += `<br><br><strong>Similar:</strong> ${similar.map(p => `${p.brand} ${p.name}`).join(', ')}`;
+        }
+        return response;
+      }
+      if (question.includes('fresh') || question.includes('light') || question.includes('summer')) {
+        const fresh = perfumes.filter(p =>
+          p.notes.en.some(n => ['Fresh', 'Citrus', 'Aquatic'].includes(n))
+        );
+        return `<strong>Fresh perfumes:</strong><br>` +
+          fresh.map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('intense') || question.includes('evening') || question.includes('winter')) {
+        const intense = perfumes.filter(p =>
+          p.type.includes('Intense') || p.type.includes('Parfum') ||
+          p.notes.en.some(n => ['Oriental', 'Amber', 'Vanilla'].includes(n))
+        );
+        return `<strong>Intense perfumes:</strong><br>` +
+          intense.map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('bestseller') || question.includes('popular')) {
+        return `<strong>Bestsellers:</strong><br>` +
+          `• <strong>Lancôme La Vie est Belle</strong><br>` +
+          `• <strong>Jean Paul Gaultier Le Male</strong><br>` +
+          `• <strong>Prada Paradoxe</strong><br>` +
+          `• <strong>YSL Libre</strong>`;
+      }
+      if (question.includes('women')) {
+        const women = perfumes.filter(p => p.gender === 'kadın');
+        return `<strong>Women's perfumes:</strong><br>` +
+          women.slice(0, 4).map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('men')) {
+        const men = perfumes.filter(p => p.gender === 'erkek');
+        return `<strong>Men's perfumes:</strong><br>` +
+          men.slice(0, 4).map(p => `• <strong>${p.brand} ${p.name}</strong> – ${p.desc}`).join('<br>');
+      }
+      if (question.includes('gift')) {
+        return `<strong>Gift recommendations:</strong><br>` +
+          `<strong>Women:</strong> Lancôme La Vie est Belle, YSL Libre<br>` +
+          `<strong>Men:</strong> Jean Paul Gaultier Le Male, Hugo Boss Boss Bottled`;
+      }
+      if (question.includes('date') || question.includes('romantic')) {
+        return `<strong>For romantic moments:</strong><br>` +
+          `• <strong>Lancôme La Vie est Belle</strong> – Sweet and attractive<br>` +
+          `• <strong>YSL Libre</strong> – Passionate and unforgettable<br>` +
+          `• <strong>Jean Paul Gaultier Le Male</strong> – Seductive`;
+      }
+      if (question.includes('work') || question.includes('office')) {
+        return `<strong>For work:</strong><br>` +
+          `• <strong>Hugo Boss Boss Bottled</strong> – Professional<br>` +
+          `• <strong>Chloé Chloé</strong> – Elegant<br>` +
+          `• <strong>Calvin Klein CK One</strong> – Light`;
+      }
+      return `I'm here to help ${currentUser.name}!<br>` +
+        `You can ask about:<br>` +
+        `• Specific perfumes: "Prada Paradoxe"<br>` +
+        `• Preferences: "suggest fresh perfume"<br>` +
+        `• Occasions: "for evening", "for work", "for date"<br>` +
+        `• Categories: "bestsellers", "women's perfumes"<br>` +
+        `What are you looking for?`;
+    }
+  </script>
+</body>
+</html>
