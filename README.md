@@ -1,7 +1,4 @@
-# LesParfumes
-A premium e-commerce interface for a luxury perfume brand. Features dynamic multi-criteria product filtering and a custom virtual consultant chatbot UI. Built with HTML, CSS, and vanilla JavaScript.
-
-E-Commerce Interface & Virtual Consultant
+# LesParfumes: E-Commerce Interface & Virtual Consultant
 
 A frontend web application demonstrating advanced client-side state management, dynamic DOM manipulation, and interactive UI design without the use of external frameworks.
 
